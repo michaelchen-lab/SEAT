@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}SEAT: Step 2{% endblock %}
+
+{% block content %}
+  <h2>Step 2: Filter Tweets</h2>
+  &nbsp;
+  <div class="card">
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item">
+        Enter up to 5 keyword groups to filter <b>irrelevant</b> tweets from dataset.<br />
+      </li>
+      <li class="list-group-item">
+        <b>Input Format:</b> <br />
+        <ul>
+          <li>
+            Keyword Group Name: The name you give the the group of keywords. The Group name itself is not used in the filtering algorithm.
+          </li>
+          <li>
+            Keywords: Words you wish to use in filtering algorithm to detect irrelevant tweets. Separate each word with a semicolon.
+          </li>
+        </ul>
+        <br>
+        Note: Keywords are NOT case-sensitive.
+      </li>
+    </ul>
+  </div>
+  &nbsp;
+  <form action="{% url 'core:step-two-results' %}" method="POST">{% csrf_token %}
+
+    <div class="form-group row">
+      <label for="reportName" class="col-sm-2 col-form-label"><b>Report Name</b></label>
+      <div class="col-sm-10">
+        <input class="form-control" type="text" value="{{ report.name }}" name="reportName" readonly>
+      </div>
+      <label for="reportName" class="col-sm-2 col-form-label"><b>Report ID</b></label>
+      <div class="col-sm-10">
+        <input class="form-control" type="text" value="{{ report.id }}" name="reportID" readonly>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group col-md-4">
+        <label for="inputCity">Keyword Group Name</label>
+        <input type="text" class="form-control" id="query" value="Example: Colors" name="inputNameExample" readonly>
+      </div>
+      <div class="form-group col-md-8">
+        <label for="inputCity">Keywords</label>
+        <input type="text" class="form-control" id="query" value="Green; Blue" name="inputKeywordsExample" readonly>
+      </div>
+    </div>
+
+    {% for i in '0123456789'|make_list %}
+      <div class="form-row">
+        <div class="form-group col-md-4">
+          <input type="text" class="form-control" id="query" name="{{ 'inputName'|add:i }}">
+        </div>
+        <div class="form-group col-md-8">
+          <input type="text" class="form-control" id="query" name="{{ 'inputKeywords'|add:i }}">
+        </div>
+      </div>
+    {% endfor %}
+
+    <button type="submit" class="btn btn-primary">Submit Filter</button>
+  </form>
+
+  <form action="{% url 'core:step-three' %}" method="POST">{% csrf_token %}
+    <button type="submit" class="btn btn-secondary" name="skipButton" value="{{ report.id }}">Skip to Step 3</button>
+  </form>
+{% endblock %}

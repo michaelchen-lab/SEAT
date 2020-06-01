@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}SEAT: Test{% endblock %}
+
+{% block script %}
+  {% for script in scripts %}
+    {{ script | safe }}
+  {% endfor %}
+{% endblock %}
+
+{% block content %}
+  {% for div in divs %}
+    <div>
+      {{ div | safe }}
+    </div>
+  {% endfor %}
+{% endblock %}

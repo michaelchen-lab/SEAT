@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}SEAT: Step 3{% endblock %}
+
+
+{% block content %}
+  <h2>Step 3: Categorise Tweets</h2>
+
+  &nbsp;
+  <div class="card">
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item">
+        Separate tweets into up to 5 categories, by entering up to 5 keyword groups.<br />
+        The keyword group input format is the same as that of Step 2.
+      </li>
+      <li class="list-group-item">
+        <b>Notes:</b> <br />
+        <ul>
+          <li>Tweets may be categorised into 2 or more groups.</li>
+          <li>Tweets that do not belong in any of your categories would be grouped under the 'Non-Categorised'.</li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+  &nbsp;
+
+  <form action="{% url 'core:step-three-results' %}" method="POST">{% csrf_token %}
+
+    <div class="form-group row">
+      <label for="reportName" class="col-sm-2 col-form-label"><b>Report Name</b></label>
+      <div class="col-sm-10">
+        <input class="form-control" type="text" value="{{ report.name }}" name="reportName" readonly>
+      </div>
+      <label for="reportName" class="col-sm-2 col-form-label"><b>Report ID</b></label>
+      <div class="col-sm-10">
+        <input class="form-control" type="text" value="{{ report.id }}" name="reportID" readonly>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group col-md-4">
+        <label for="inputCity">Category Name</label>
+        <input type="text" class="form-control" id="query" value="Example: Strawberry Flavor" name="inputNameExample" readonly>
+      </div>
+      <div class="form-group col-md-8">
+        <label for="inputCity">Keywords</label>
+        <input type="text" class="form-control" id="query" value="strawberry; pink; tangerine" name="inputKeywordsExample" readonly>
+      </div>
+    </div>
+
+    {% for i in '0123456789'|make_list %}
+      <div class="form-row">
+        <div class="form-group col-md-4">
+          <input type="text" class="form-control" id="query" name="{{ 'inputName'|add:i }}">
+        </div>
+        <div class="form-group col-md-8">
+          <input type="text" class="form-control" id="query" name="{{ 'inputKeywords'|add:i }}">
+        </div>
+      </div>
+    {% endfor %}
+
+    <button type="submit" class="btn btn-primary">Submit Categories</button>
+  </form>
+
+  <form action="{% url 'core:step-four' %}" method="POST">{% csrf_token %}
+    <button type="submit" class="btn btn-secondary" name="skipButton" value="{{ report.id }}">Skip to Step 4</button>
+  </form>
+{% endblock %}

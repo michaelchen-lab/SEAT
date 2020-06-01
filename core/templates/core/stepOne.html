@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}SEAT: Step 1{% endblock %}
+
+{% block content %}
+  <h2>Step 1: Query Tweets</h2>
+  &nbsp;
+  <div class="card">
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item">
+        Enter up to 5 query commands to extract relevant tweets from Twitter.<br />
+        The data can take up to 1 minute to be extracted and saved.
+      </li>
+    </ul>
+  </div>
+  &nbsp;
+  <form action="{% url 'core:step-one-results' %}" method="POST">{% csrf_token %}
+
+    <div class="form-group row">
+      <label for="reportName" class="col-sm-2 col-form-label"><b>Report Name</b></label>
+      <div class="col-sm-10">
+        <input class="form-control" type="text" value="{{ report.name }}" name="reportName" readonly>
+      </div>
+      <label for="reportName" class="col-sm-2 col-form-label"><b>Report ID</b></label>
+      <div class="col-sm-10">
+        <input class="form-control" type="text" value="{{ report.id }}" name="reportID" readonly>
+      </div>
+    </div>
+
+    {% for i in '12345'|make_list %}
+      <div class="form-row">
+        <div class="form-group col-md-3">
+          <label for="inputState">Type</label>
+          <select id="inputState" class="form-control" name="{{ 'inputContain'|add:i }}">
+            <option selected> </option>
+            <option>Contains</option>
+            <option>Does not contain</option>
+          </select>
+        </div>
+        <div class="form-group col-md-1">
+          <label for="inputState">Prefix</label>
+          <select id="inputState" class="form-control" name="{{ 'inputPrefix'|add:i }}">
+            <option selected> </option>
+            <option>NIL</option>
+            <option>#</option>
+            <option>@</option>
+          </select>
+        </div>
+        <div class="form-group col-md-8">
+          <label for="inputCity">Query</label>
+          <input type="text" class="form-control" id="query" name="{{ 'inputQuery'|add:i }}">
+        </div>
+      </div>
+    {% endfor %}
+
+    <div class="form-group">
+      <label for="formControlRange">Number of Tweets</label>
+      <input type="range" class="form-control-range" id="formControlRange" name="tweetsNumber" value="5000" min="200" max="10000" oninput="showTweetsNumber.value = tweetsNumber.value">
+      <p style="display:inline">(</p><output name="showTweetsNumber" id="ageOutputId">5000</output><p style="display:inline">)</p>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit Queries</button>
+  </form>
+{% endblock %}

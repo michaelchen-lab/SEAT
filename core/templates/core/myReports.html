@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}My Reports{% endblock %}
+
+{% block content %}
+  &nbsp;
+  {% for allReportData in allReportDataChunks %}
+    <div class="card-deck">
+      {% for reportData in allReportData %}
+        <div class="col-sm-6">
+          <div class="card">
+            <div class="card-body">
+
+              {% if reportData.completed %}
+                <h5 class="card-title">{{ reportData.name }} <span class="badge badge-success">Completed</span></h5>
+              {% else %}
+                <h5 class="card-title">{{ reportData.name }} <span class="badge badge-danger">In Progress</span></h5>
+              {% endif %}
+              <p class="card-text">{{ reportData.description }}</p>
+
+              {% if reportData.completed %}
+                <a href="{% url 'core:report' reportData.name %}" class="btn btn-primary">View Report</a>
+              {% else %}
+                <a href="{% url 'core:resume-report' reportData.name %}" class="btn btn-primary">Resume Report</a>
+              {% endif %}
+
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">Created on {{ reportData.created_at }}</small>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+    &nbsp;
+  {% endfor %}
+
+{% endblock %}

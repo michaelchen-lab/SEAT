@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block title %}SEAT: Step 2{% endblock %}
+
+{% block script %}
+  {{ mainScript | safe }}
+  {% for script in componentScripts %}
+    {{ script | safe }}
+  {% endfor %}
+{% endblock %}
+
+{% block content %}
+  <h2>Step 2 Results: Filtered Tweets</h2>
+  &nbsp;
+  <div class="card">
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item">
+        Your tweets dataset has been filtered based on your keywords. <br><br>
+        Please review the sample tweets and its associated graphical representations.
+        If you choose to continue from this step, the irrelevant tweets would be deleted permanently,
+        to speed up data processing and improve your experience.
+      </li>
+    </ul>
+  </div>
+  &nbsp;
+  <form action="{% url 'core:step-two' %}" method="POST">{% csrf_token %}
+    <div class="form-group row">
+      <label for="reportName" class="col-sm-2 col-form-label"><b>Report Name</b></label>
+      <div class="col-sm-10">
+        <input class="form-control" type="text" value="{{ report.name }}" name="reportName" readonly>
+      </div>
+      <label for="reportName" class="col-sm-2 col-form-label"><b>Report ID</b></label>
+      <div class="col-sm-10">
+        <input class="form-control" type="text" value="{{ report.id }}" name="reportID" readonly>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-danger" name="changeButton" value="True">Revise Filter Queries</button>
+  </form>
+
+  <form action="{% url 'core:step-three' %}" method="POST">{% csrf_token %}
+    <button type="submit" class="btn btn-primary" name="continueButton" value="{{ report.id }}">Continue to Step 3</button>
+  </form>
+
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Overall Filter Stats</h5>
+          <p class="card-text">Shows the percentage of relevant and irrelevant tweets for the entire dataset.</p>
+          {{ mainDiv | safe }}
+        </div>
+      </div>
+    </div>
+    {% for name, components in componentDivs.items %}
+      <div class="col-sm-6">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">{{ name }}</h5>
+
+            <p class="card-text">
+              Keywords:
+              {% for word in components.0 %}
+                  <li>{{ word }}</li>
+              {% endfor %}
+            </p>
+            {{ components.1 | safe }}
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+  &nbsp;
+  &nbsp;
+  <h4>Sample Tweets</h4>
+
+
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th class="col-xs-4" scope="col">ID</th>
+        <th class="col-xs-4" scope="col">Text</th>
+        <th class="col-xs-4" scope="col">Created at</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for tweet in irrelevant_sampleTweets %}
+        <tr>
+          <th scope="row">{{ tweet.tweet_id }}</th>
+          <td>{{ tweet.text }}</td>
+          <td>{{ tweet.pub_date }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <form action="{% url 'core:sampleTweetsFile' report.name %}" target="_blank" method="POST">{% csrf_token %}
+    <button type="submit" class="btn btn-primary" name="exportButton" value="with_is_relevant;100">Export 100 Sample Tweets</button>
+    <button type="submit" class="btn btn-secondary" name="exportButton" value="with_is_relevant;all">Export All Tweets</button>
+    <small id="exportHelp" class="form-text text-muted">*Relevance tag of each tweet will be included.</small>
+  </form>
+{% endblock %}

@@ -1,0 +1,123 @@
+{% extends 'helpBase.html' %}
+
+{% block title %}Pipeline Help{% endblock %}
+
+{% block content %}
+  &nbsp;
+  <div class="card">
+    <div class="card-body">
+      <h4 class="card-title" style="text-align:center">Pipeline Tutorial</h4>
+      <p class="card-text">
+        Get started with SEAT Reports, the easiest way for non-technical users to create sentiment analysis reports
+        using our proprietary pipeline.<br>
+        All the steps in a pipeline are introduced below. We recommend that you constantly refer to this page, while creating your first pipeline.
+      </p>
+    </div>
+  </div>
+  &nbsp;
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">Step Zero</h5>
+      <p class="card-text">
+        This is the beginning of your pipeline. Simply enter a report name and a short description.<br><br>
+
+        <b>Criteria(s):</b>
+        <ul>
+          <li>You cannot have reports with the same names.</li>
+        </ul>
+      </p>
+    </div>
+  </div>
+
+  &nbsp;
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">Step One: Extract Tweets</h5>
+      <p class="card-text">
+        In order to extract relevant tweets from Twitter, you are allowed to include up to 5 keywords in your final query.
+        The usage of hashtags and mentions often provide more relevant results.
+        You are encouraged to experiment with different queries to extract the most suitable tweets dataset.<br><br>
+
+        <b>Criteria(s):</b>
+        <ul>
+          <li>Each row in form must either be fully completed or left empty</li>
+          <li>Each row may only contain one keyword</li>
+        </ul>
+
+        <b>Note(s):</b>
+        <ul>
+          <li>The dataset can take up to one minute to be extracted, depending on your query's complexity and number of tweets.</li>
+          <li>The Twitter API only allows users to extract up to 7 days worth of tweets. Thus, you may not receive all your requested tweets.</li>
+        </ul>
+      </p>
+    </div>
+  </div>
+
+  &nbsp;
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">Step Two: Filter Tweets</h5>
+      <p class="card-text">
+        This step will help you separate relevant and irrelevant tweets in your dataset, allowing you to focus only on the relevant ones.
+        Just like the previous step, you are welcome to test different keywords.
+        <br><br>
+
+        <b>Format(s):</b>
+        <ul>
+          <li>Keyword Group Name: The name you give the the group of keywords. The Group name itself is not used in the filtering algorithm.</li>
+          <li>Keywords: Words you wish to use in filtering algorithm to detect irrelevant tweets. Separate each word with a semicolon.</li>
+        </ul>
+
+        <b>Note(s):</b>
+        <ul>
+          <li>Keywords are NOT case-sensitive.</li>
+          <li>Keyword Group Names cannot be the same.</li>
+          <li><i>Remember to input variations of the same words in your list of keywords</i> (e.g. POTUS; realDonaldTrmp; Trump)</li>
+        </ul>
+      </p>
+    </div>
+  </div>
+
+  &nbsp;
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">Step Three: Categorise Tweets</h5>
+      <p class="card-text">
+        This step will help you separate tweets into different categories, allowing you create a deeper analysis of user sentiments.
+        <br><br>
+
+        <b>Format(s):</b>
+        <ul>
+          <li>The input format is similar to Step Two.</li>
+        </ul>
+
+        <b>Note(s):</b>
+        <ul>
+          <li>Keywords are NOT case-sensitive.</li>
+          <li>Category names cannot be the same. The name 'Non-Categorised' is reserved and cannot be used.</li>
+          <li>Tweets may be categorised in more than one category, or none at all.</li>
+        </ul>
+      </p>
+    </div>
+  </div>
+
+  &nbsp;
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">Step Four: Choosing Model(s)</h5>
+      <p class="card-text">
+        In the final step of your pipeline, choose your preferred sentiment analysis model(s).
+        If you are unfamiliar with their different properties, we recommend that you select all of them and choose the most suitable.
+        <br><br>
+
+        <b>Note(s):</b>
+        <ul>
+          <li>All models are pre-trained, and therefore do not require training data/manual labelling from user.</li>
+          <li>Limitation: The models uses generic keywords to analyze sentiment (e.g. terrible, amazing), so they are incapable of processing topic-specific sentiment keywords.</li>
+        </ul>
+      </p>
+    </div>
+  </div>
+
+  &nbsp;
+{% endblock %}

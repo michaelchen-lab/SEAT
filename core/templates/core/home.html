@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+  &nbsp;
+  <div class="row">
+    <div class="col-sm-6">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Tutorials</h5>
+          <p class="card-text">Found out how to fully utilize a SEAT Report here!</p>
+          <div style="text-align: center">
+            <a href="{% url 'help:pipeline' %}" class="btn btn-primary">Help Center</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Create a SEAT Report</h5>
+          <p class="card-text">Start your sentiment analysis here!</p>
+          <div style="text-align: center">
+            <a href="{% url 'core:step-zero' %}" class="btn btn-primary">Start Pipeline</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  &nbsp;
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">View Reports</h5>
+          <p class="card-text">
+            Wish to access a saved report? Click here to view all your reports!
+            Full analysis reports and complete datasets with results are available here.
+          </p>
+          <div style="text-align: center">
+            <a href="{% url 'core:my-reports' %}" class="btn btn-primary">My Reports</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block title %}SEAT: Step 4 Results{% endblock %}
+
+{% block script %}
+  {{ mainScript | safe }}
+  {% for script in componentScripts %}
+    {{ script | safe }}
+  {% endfor %}
+{% endblock %}
+
+{% block content %}
+  <h2>Step 3 Results: Categorised Tweets</h2>
+  &nbsp;
+  <div class="card">
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item">
+        <b>Congratulations!</b> The results from your chosen sentiment analysis model(s) have been produced.<br><br>
+
+        This is a brief summary of your analysis results. A spreadsheet of sample tweets, with their corresponding analysis results, can be downloaded below.
+        This should allow you to briefly examine analysis results. A complete report and dataset will be available for analysis once you finish and save this report.
+      </li>
+      <li class="list-group-item">
+        Note: Sentiment analysis scores range from -1 to 1, with -1 being most negative and 1 being most positive.
+      </li>
+
+    </ul>
+  </div>
+  &nbsp;
+
+  <form action="{% url 'core:step-four' %}" method="POST">{% csrf_token %}
+    <div class="form-group row">
+      <label for="reportName" class="col-sm-2 col-form-label"><b>Report Name</b></label>
+      <div class="col-sm-10">
+        <input class="form-control" type="text" value="{{ report.name }}" name="reportName" readonly>
+      </div>
+      <label for="reportName" class="col-sm-2 col-form-label"><b>Report ID</b></label>
+      <div class="col-sm-10">
+        <input class="form-control" type="text" value="{{ report.id }}" name="reportID" readonly>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-danger" name="changeButton" value="True">Revise Analysis Options</button>
+  </form>
+
+  <form action="{% url 'core:home' %}" method="POST">{% csrf_token %}
+    <button type="submit" class="btn btn-primary" name="finishButton" value="{{ report.name }}">Finish and Save Report</button>
+  </form>
+
+  &nbsp;
+  <h4>Preliminary Report</h4>
+  &nbsp;
+
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Aggregate Sentiment</h5>
+          <p class="card-text">The aggregate sentiment of each tweet is calculated by the average of all selected models.</p>
+          {{ mainDiv | safe }}
+        </div>
+      </div>
+    </div>
+    {% for name, component in componentDivs.items %}
+      <div class="col-sm-6">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">{{ name }}</h5>
+            {{ component | safe }}
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+  &nbsp;
+
+  <form action="{% url 'core:sampleTweetsFile' report.name %}" target="_blank" method="POST">{% csrf_token %}
+    <button type="submit" class="btn btn-primary" name="exportButton" value="with_sentiment;100">Export 100 Sample Tweets</button>
+    <small id="exportHelp" class="form-text text-muted">*Sentiment data will be included.</small>
+  </form>
+{% endblock %}
