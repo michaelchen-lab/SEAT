@@ -2,7 +2,7 @@ import nltk
 from textblob import TextBlob
 #import flair
 
-#nltk.download('vader_lexicon')
+nltk.download('vader_lexicon')
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
 def nltkSentiment(sentences):
@@ -26,7 +26,7 @@ def textBlobSentiment(sentences):
 ##def flairSentiment(sentence):
 ##
 ##    flair_sentiment = flair.models.TextClassifier.load('en-sentiment')
-##    
+##
 ##    s = flair.data.Sentence(sentence)
 ##    flair_sentiment.predict(s)
 ##    total_sentiment = s.labels
