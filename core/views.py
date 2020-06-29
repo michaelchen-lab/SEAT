@@ -342,6 +342,12 @@ def stepTwoResultsView(request):
         ## Label tweets DataFrame using keyword groups
         filtered_df, label_analysis = labelingWrapper(df, keyword_groups=keywordGroups, label=0, l_type='SnorkelFilter')
 
+        ## If there are no irrelevant tweets after filtering, produce an error
+        irrelevant_ids = filtered_df[filtered_df.relevance == 0].id.tolist()
+        if irrelevant_ids == []:
+            request.session['error'] = {'danger_alert':'Your keywords did not result in any tweets being categorised as IRRELEVANT.'}
+            return redirect('core:step-two')
+
         ## Update database for relevance data
         irrelevant_ids = filtered_df[filtered_df.relevance == 0].id.tolist()
         report.tweet_set.filter(tweet_id__in=irrelevant_ids).update(is_relevant='0')
@@ -453,9 +459,13 @@ def stepThreeResultsView(request):
         ## Update database to add categories ##
         categorised_tweet_ids = []
         for categoryName, categoryKeywords in keywordGroups.items():
-            cat = report.tweetcategory_set.create(name=categoryName, keywords=categoryKeywords)
-
+            ## If category has no tweets, return an error.
             tweet_ids = filtered_df[filtered_df[categoryName] == 1]['id'].tolist()
+            if tweet_ids == []:
+                request.session['error'] = {'danger_alert':'Your category '+categoryName+' does not contain any tweets. Perhaps edit your keywords or change the method?'}
+                return redirect('core:step-three')
+
+            cat = report.tweetcategory_set.create(name=categoryName, keywords=categoryKeywords)
             tweets = report.tweet_set.filter(tweet_id__in=tweet_ids)
             cat.tweets.add(*tweets)
 
