@@ -155,16 +155,18 @@ def reportView(request, report_name):
                 else:
                     tweetsInCat = report.tweetcategory_set.get(name=catName).tweets.all()
 
-                tweetsByType, countsByType, avgByType = filterSentiment(tweetsInCat)
-                # Keep only selected sentiment types
-                countsByType = {sentType:sentiments for sentType,sentiments in countsByType.items() if sentType in formData}
-                avgByType = {sentType:sentiments for sentType,sentiments in avgByType.items() if sentType in formData}
+                if tweetsInCat:
 
-                visualByType = {}
-                for sentType, sentCount in countsByType.items():
-                    visualByType[sentType] = dict(zip(['script', 'div'], list(graphWrapper(type='pieChart', data=sentCount, paletteType='Set2'))))
+                    tweetsByType, countsByType, avgByType = filterSentiment(tweetsInCat)
+                    # Keep only selected sentiment types
+                    countsByType = {sentType:sentiments for sentType,sentiments in countsByType.items() if sentType in formData}
+                    avgByType = {sentType:sentiments for sentType,sentiments in avgByType.items() if sentType in formData}
 
-                visualData[catName] = visualByType
+                    visualByType = {}
+                    for sentType, sentCount in countsByType.items():
+                        visualByType[sentType] = dict(zip(['script', 'div'], list(graphWrapper(type='pieChart', data=sentCount, paletteType='Set2'))))
+
+                    visualData[catName] = visualByType
 
         data['visualData'] = visualData
 
@@ -357,7 +359,12 @@ def stepTwoResultsView(request):
             graphData.append({'Irrelevant (%)':value*100, 'Relevant (%)':(1-float(value))*100})
 
         ## Get graph scripts and divs
-        mainScript, mainDiv = graphWrapper(type='pieChart', data={'Irrelevant':overall_relevance.at[0], 'Relevant':overall_relevance.at[1]}, paletteType='Set1')
+        try:
+            mainScript, mainDiv = graphWrapper(type='pieChart', data={'Irrelevant':overall_relevance.at[0], 'Relevant':overall_relevance.at[1]}, paletteType='Set1')
+        except:
+            ## where there are no irrelevant tweets
+            mainScript, mainDiv = graphWrapper(type='pieChart', data={'Irrelevant':0, 'Relevant':overall_relevance.at[1]}, paletteType='Set1')
+
         componentScripts, componentDivs = [], []
         for data in graphData:
             script, div = graphWrapper(type='pieChart', data=data, paletteType='Set2')

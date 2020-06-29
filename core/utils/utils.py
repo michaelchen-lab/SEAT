@@ -190,4 +190,6 @@ def nlpWrapper(formData, tweets):
     return tweet_sentiments
 
 if __name__ == '__main__':
-    df = twitterApiWrapper(q='@CarnivalCruise refund', count=200)
+    #df = twitterApiWrapper(q='@CarnivalCruise refund', count=200)
+
+    script, div = graphWrapper(type='pieChart', data={'Relevant':100, 'Irrelevant':0}, paletteType='Set1')
