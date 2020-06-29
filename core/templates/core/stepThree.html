@@ -10,13 +10,18 @@
   <div class="card">
     <ul class="list-group list-group-flush">
       <li class="list-group-item">
-        Separate tweets into up to 5 categories, by entering up to 5 keyword groups.<br />
-        The keyword group input format is the same as that of Step 2.
+        Separate tweets into up to 5 categories, by entering up to 5 keyword groups. This allows the analysis in final report to be more nuanced.
+        Go to our Help page to find out the input format of each method, and how they work.
       </li>
       <li class="list-group-item">
+        <b>Which method should I choose?</b>
+        <ul>
+          <li>If you have several words/phrases for each category (small text body), use absolute method.</li>
+          <li>If you have several sentences or a paragraph for each category (large text body), use NLP method.</li>
+        </ul>
+
         <b>Notes:</b> <br />
         <ul>
-          <li>Tweets may be categorised into 2 or more groups.</li>
           <li>Tweets that do not belong in any of your categories would be grouped under the 'Non-Categorised'.</li>
         </ul>
       </li>
@@ -37,17 +42,51 @@
       </div>
     </div>
 
+    &nbsp;
+    <fieldset class="form-group">
+      <div class="row">
+        <legend class="col-form-label col-sm-2 pt-0">Method</legend>
+        <div class="col-sm-10">
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="method" id="gridRadios1" value="SnorkelCategorise" checked>
+            <label class="form-check-label" for="gridRadios1">
+              Absolute Method
+            </label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="method" id="gridRadios2" value="NLP_Categorise">
+            <label class="form-check-label" for="gridRadios2">
+              NLP Method
+            </label>
+          </div>
+        </div>
+      </div>
+    </fieldset>
+    &nbsp;
+
     <div class="form-row">
       <div class="form-group col-md-4">
         <label for="inputCity">Category Name</label>
-        <input type="text" class="form-control" id="query" value="Example: Strawberry Flavor" name="inputNameExample" readonly>
+        <input type="text" class="form-control" id="query" value="Strawberry Flavor (Absolute Example)" name="inputNameExample" readonly>
       </div>
       <div class="form-group col-md-8">
         <label for="inputCity">Keywords</label>
-        <input type="text" class="form-control" id="query" value="strawberry; pink; tangerine" name="inputKeywordsExample" readonly>
+        <textarea type="text" class="form-control" id="query" rows="3" name="inputKeywordsExample" readonly>strawberry; pink; tangerine
+        </textarea>
       </div>
     </div>
 
+    <div class="form-row">
+      <div class="form-group col-md-4">
+        <input type="text" class="form-control" id="query" value="COVID-19 (NLP Example)" name="inputNameExample2" readonly>
+      </div>
+      <div class="form-group col-md-8">
+        <textarea type="text" class="form-control" id="query" rows="3" name="inputKeywordsExample2" readonly>Coronavirus disease (COVID-19) is an infectious disease caused by a newly discovered coronavirus. Most people infected with the COVID-19 virus will experience mild to moderate respiratory illness and recover without requiring special treatment.
+        </textarea>
+      </div>
+    </div>
+
+    {% comment %}
     {% for i in '0123456789'|make_list %}
       <div class="form-row">
         <div class="form-group col-md-4">
@@ -55,6 +94,18 @@
         </div>
         <div class="form-group col-md-8">
           <input type="text" class="form-control" id="query" name="{{ 'inputKeywords'|add:i }}">
+        </div>
+      </div>
+    {% endfor %}
+    {% endcomment %}
+
+    {% for i in '01234'|make_list %}
+      <div class="form-row">
+        <div class="form-group col-md-4">
+          <input type="text" class="form-control" id="query" name="{{ 'inputName'|add:i }}">
+        </div>
+        <div class="form-group col-md-8">
+          <textarea type="text" class="form-control" id="query" rows="3" name="{{ 'inputKeywords'|add:i }}"></textarea>
         </div>
       </div>
     {% endfor %}

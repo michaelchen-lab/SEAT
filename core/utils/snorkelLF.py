@@ -30,6 +30,15 @@ def make_keyword_lf(lf_name, keywords, label=IRRELEVANT):
 def get_L_final_filter(L_train, method='model'):
     L_final = []
 
+    if len(L_train[0]) < 3:
+        method = 'absolute'
+    else:
+        method = 'model'
+
+    ## TEMPORARY MEASURE
+    method = 'absolute'
+    ##
+
     if method == 'absolute':
         ## Absolute Method: Any 'irrelevant' keywords matched will be flagged as irrelevant
         for array in L_train:
@@ -51,13 +60,16 @@ def get_L_final_categorise(L_train):
 
     return L_train
 
-def startLabeling(df, keyword_groups={}, label=IRRELEVANT, l_type='filter'):
+def startSnorkelLabeling(df, keyword_groups={}, label=IRRELEVANT, l_type='SnorkelFilter'):
     '''
     Function: Filter words for user
     Inputs:
         - df: tweets DataFrame (columns: [id, text])
         - keywords: Keyword group and its relevant keywords
           E.g. {'usps': ['postal service', 'usps'], 'invest': ['invest','portfolio','stock']}
+    Outputs:
+        - a_df: Categorised Data (e.g. columns = ['id', 'tweets', 'Refund', 'COVID'])
+        - analysis: Snorkel Labeling Function statistics
     '''
 
     lfs = []
@@ -67,11 +79,11 @@ def startLabeling(df, keyword_groups={}, label=IRRELEVANT, l_type='filter'):
     applier = PandasLFApplier(lfs=lfs)
     L_train = applier.apply(df=df)
 
-    if l_type == 'filter': # For spam detection (Step 2)
+    if l_type == 'SnorkelFilter': # For spam detection (Step 2)
         L_final = get_L_final_filter(L_train)
         df['relevance'] = L_final
 
-    elif l_type == 'categorise': # For categorising tweets (Step 3)
+    elif l_type == 'SnorkelCategorise': # For categorising tweets (Step 3)
         L_final = get_L_final_categorise(L_train)
 
         L_final_with_names = dict(zip(keyword_groups.keys(), L_final))
@@ -80,7 +92,8 @@ def startLabeling(df, keyword_groups={}, label=IRRELEVANT, l_type='filter'):
 
     analysis = LFAnalysis(L=L_train, lfs=lfs).lf_summary()
 
-    return L_train, L_final, df, analysis
+    #return L_train, L_final, df, analysis
+    return df, analysis
 
 if __name__ == '__main__':
 
@@ -97,5 +110,8 @@ if __name__ == '__main__':
 ##    df['relevance'] = L_final
 
     df = pd.read_csv('tweets.csv')
+    keyword_groups={'refund':['refund', 'cancel', 'cancelled',
+                    'canceled'], 'COVID-19':['COVID','virus','coronavirus']}
 
-    L_train, L_final, a_df, analysis = startLabeling(df, keyword_groups={'refund':['refund', 'cancel', 'cancelled', 'canceled'], 'COVID-19':['COVID','virus','coronavirus']}, label=RELEVANT, l_type='categorise')
+    a_df, analysis = startLabeling(df, keyword_groups=keyword_groups,
+                                   label=RELEVANT, l_type='SnorkelCategorise')

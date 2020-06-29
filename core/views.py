@@ -15,7 +15,7 @@ from .forms import SignUpForm
 from .models import Report, Tweet, tweetCategory
 from .utils.utils import *
 
-def signupView(request):
+def signupViewBackup(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
@@ -34,6 +34,20 @@ def signupView(request):
         form = SignUpForm()
     return render(request, 'core/signup.html', {'form': form})
 
+def signupView(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=raw_password)
+            login(request, user)
+            return redirect('core:home')
+    else:
+        form = UserCreationForm()
+    return render(request, 'core/signup.html', {'form': form})
+
 def loginView(request):
     if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)
@@ -49,7 +63,7 @@ def loginView(request):
         form = AuthenticationForm()
     return render(request, 'core/login.html', {'form':form})
 
-@login_required
+@login_required(login_url='/user/login')
 def homeView(request):
 
     ## Create alert
@@ -75,14 +89,20 @@ def homeView(request):
     if button != '':
         report = Report.objects.get(id=request.session['reportID'])
         report.delete()
-        data.update({'success_alert':'Your report ('+button+') has been deleted!'})
+        data.update({'success_alert':'Your incomplete report ('+button+') has been discarded!'})
+
+    button = request.POST.get('deleteButton', '')
+    if button != '':
+        report = Report.objects.get(id=button)
+        report.delete()
+        data.update({'primary_alert':'Your report ('+report.name+') has been deleted!'})
 
     if 'reportID' in request.session:
         del request.session['reportID']
 
     return render(request, 'core/home.html', data)
 
-@login_required()
+@login_required(login_url='/user/login')
 def myReportsView(request):
     data = {}
 
@@ -106,7 +126,7 @@ def myReportsView(request):
     data.update({'allReportDataChunks':allReportDataChunks})
     return render(request, 'core/myReports.html', data)
 
-@login_required()
+@login_required(login_url='/user/login')
 def reportView(request, report_name):
     data = {}
 
@@ -148,10 +168,14 @@ def reportView(request, report_name):
 
         data['visualData'] = visualData
 
-    data.update({'report':report, 'countTweets':report.tweet_set.count(), 'created_at':report.pub_date.strftime('%Y-%m-%d %H:%M')})
+    # 'reportView':'True'
+    data.update({
+        'report':report,
+        'countTweets':report.tweet_set.count(),
+        'created_at':report.pub_date.strftime('%Y-%m-%d %H:%M'),})
     return render(request, 'core/report.html', data)
 
-@login_required()
+@login_required(login_url='/user/login')
 def resumeReportView(request, report_name):
     data = {}
 
@@ -175,7 +199,7 @@ def resumeReportView(request, report_name):
         return redirect('core:step-four')
 
 
-@login_required()
+@login_required(login_url='/user/login')
 def stepZeroView(request):
 
     ## Create alert
@@ -186,7 +210,7 @@ def stepZeroView(request):
 
     return render(request, 'core/stepZero.html', data)
 
-@login_required
+@login_required(login_url='/user/login')
 def stepOneView(request):
     data = {}
 
@@ -195,9 +219,9 @@ def stepOneView(request):
     #     return redirect('core:home')
 
     if 'reportID' not in request.session: ## Report does not exist
-        if Report.objects.filter(name=request.POST.get('name')).exists():
-            request.session['error'] = {'danger_alert':'The report name already exits. Please enter a unique report name.'}
-            return redirect('core:step-zero')
+        #if Report.objects.filter(name=request.POST.get('name')).exists():
+        #    request.session['error'] = {'danger_alert':'The report name already exits. Please enter a unique report name.'}
+        #    return redirect('core:step-zero')
 
         user = User.objects.get(id=request.user.id)
         report = Report(
@@ -228,7 +252,7 @@ def stepOneView(request):
     data.update({'report':report})
     return render(request, 'core/stepOne.html', data)
 
-@login_required
+@login_required(login_url='/user/login')
 def stepOneResultsView(request):
     if request.method == 'POST':
         try:
@@ -258,7 +282,7 @@ def stepOneResultsView(request):
         report.save()
         return render(request, 'core/stepOneResults.html', {'report': report, 'sampleTweets':report.tweet_set.all()[:15], 'countTweets':report.tweet_set.count()})
 
-@login_required
+@login_required(login_url='/user/login')
 def stepTwoView(request):
     data = {}
 
@@ -294,7 +318,7 @@ def stepTwoView(request):
 
     return render(request, 'core/stepTwo.html', data)
 
-@login_required
+@login_required(login_url='/user/login')
 def stepTwoResultsView(request):
     if request.method == 'POST':
         try:
@@ -314,7 +338,7 @@ def stepTwoResultsView(request):
 
         df = tweets_to_df(report)
         ## Label tweets DataFrame using keyword groups
-        filtered_df, label_analysis = labelingWrapper(df, keyword_groups=keywordGroups)
+        filtered_df, label_analysis = labelingWrapper(df, keyword_groups=keywordGroups, label=0, l_type='SnorkelFilter')
 
         ## Update database for relevance data
         irrelevant_ids = filtered_df[filtered_df.relevance == 0].id.tolist()
@@ -356,7 +380,7 @@ def stepTwoResultsView(request):
         }
         return render(request, 'core/stepTwoResults.html', data)
 
-@login_required()
+@login_required(login_url='/user/login')
 def stepThreeView(request):
     data = {}
 
@@ -372,6 +396,7 @@ def stepThreeView(request):
         changeButton = request.POST.get('changeButton','')
         if changeButton == 'True':
             report.tweetcategory_set.all().delete()
+            report.tweetCategory_method = ''
 
         ## Check for 'skip' button from stepTwo
         if request.POST.get('skipButton', None) != None:
@@ -393,7 +418,7 @@ def stepThreeView(request):
 
     return render(request, 'core/stepThree.html', data)
 
-@login_required()
+@login_required(login_url='/user/login')
 def stepThreeResultsView(request):
     if request.method == 'POST':
         try:
@@ -416,7 +441,7 @@ def stepThreeResultsView(request):
 
         df = tweets_to_df(report)
         ## Label tweets DataFrame using keyword groups
-        filtered_df, label_analysis = labelingWrapper(df, keyword_groups=keywordGroups, label=1, l_type='categorise')
+        filtered_df, label_analysis = labelingWrapper(df, keyword_groups=keywordGroups, label=1, l_type=formData['method'])
 
         ## Update database to add categories ##
         categorised_tweet_ids = []
@@ -475,6 +500,10 @@ def stepThreeResultsView(request):
         # covid; virus; coronavirus
 
         report.pipeline_step = 'step-three-results'
+        if formData['method'] == 'SnorkelCategorise':
+            report.tweetCategory_method = 'Absolute Method'
+        else:
+            report.tweetCategory_method = 'NLP Method'
         report.save()
         data = {
             'report':report,
@@ -486,7 +515,7 @@ def stepThreeResultsView(request):
     else:
         return redirect('core:home')
 
-@login_required()
+@login_required(login_url='/user/login')
 def stepFourView(request):
     data = {}
 
@@ -511,7 +540,7 @@ def stepFourView(request):
 
     return render(request, 'core/stepFour.html', data)
 
-@login_required
+@login_required(login_url='/user/login')
 def stepFourResultsView(request):
     data = {}
 
@@ -562,7 +591,7 @@ def stepFourResultsView(request):
         })
         return render(request, 'core/stepFourResults.html', data)
 
-@login_required
+@login_required(login_url='/user/login')
 def sampleTweetsFileView(request, report_name):
     if request.method == 'POST':
         try:

@@ -28,6 +28,7 @@ class Report(models.Model):
 
     query = models.CharField(max_length=156, default='')
     relevanceKeywords = JSONField(default=dict)
+    tweetCategory_method = models.CharField(max_length=156, default='')
     pipeline_step = models.CharField(max_length=200, default='') ## Step entered IS BEING DONE
 
     def __str__(self):

@@ -2,7 +2,8 @@ import pandas as pd
 import numpy as np
 
 from .twitterApi import twitterApi
-from .snorkelLF import startLabeling
+from .snorkelLF import startSnorkelLabeling
+from .NLPLF import start_NLPLF
 from .bokehGraphing import *
 from .sentimentAnalysisModels import *
 
@@ -65,14 +66,12 @@ def tweets_to_df(report, add_ons=[]):
 
             for cat in report.tweetcategory_set.all():
                 df[cat.name] = np.where(df['id'].isin([tweet.tweet_id for tweet in cat.tweets.all()]), 'TRUE', 'FALSE')
-            del df['Other']
+            del df['Non-Categorised']
 
         elif var == 'sentiment':
 
             for sentimentType in report.tweet_set.first().sentiment.keys():
                 df[sentimentType+' Sentiment'] = [tweet.sentiment[sentimentType] for tweet in report.tweet_set.all()]
-
-    df.to_csv('test.csv')
 
     return df
 
@@ -150,7 +149,10 @@ def labelingWrapper(df, keyword_groups={}, label=0, l_type='filter'):
 
     assert type(keyword_groups) == dict
 
-    df, analysis = startLabeling(df, keyword_groups=keyword_groups, label=label, l_type=l_type)
+    if l_type == 'NLP_Categorise':
+        df, analysis = start_NLPLF(df, keyword_groups=keyword_groups, label=label, l_type=l_type)
+    else:
+        df, analysis = startSnorkelLabeling(df, keyword_groups=keyword_groups, label=label, l_type=l_type)
 
     return df, analysis
 

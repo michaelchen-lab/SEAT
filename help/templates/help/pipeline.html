@@ -6,7 +6,7 @@
   &nbsp;
   <div class="card">
     <div class="card-body">
-      <h4 class="card-title" style="text-align:center">Pipeline Tutorial</h4>
+      <h4 class="card-title" style="text-align:center">Guide to SEAT Pipeline</h4>
       <p class="card-text">
         Get started with SEAT Reports, the easiest way for non-technical users to create sentiment analysis reports
         using our proprietary pipeline.<br>
@@ -86,16 +86,41 @@
         This step will help you separate tweets into different categories, allowing you create a deeper analysis of user sentiments.
         <br><br>
 
-        <b>Format(s):</b>
+        <b>Which method should I choose?</b>
         <ul>
-          <li>The input format is similar to Step Two.</li>
+          <li>If you have several words/phrases for each category (small text body), use absolute method.</li>
+          <li>If you have several sentences or a paragraph for each category (large text body), use NLP method.</li>
         </ul>
 
-        <b>Note(s):</b>
+        <b>Absolute Method</b>
+        <ul>
+          <li>Not all tweets would be categorised, and may be categorised into 2 or more groups.</li>
+          <li>Directly matches tweets to your categories, when at least one exact keyword is found as a <i>standalone</i> word or phrase.</li>
+          <li>Example sentence matching keyword 'realDonaldTrump': "@realDonaldTrump is a donkey."</li>
+          <li>Example sentence NOT matching keyword 'virus': "Dogs are nothing more than viruses."</li>
+        </ul>
+
+        <b>NLP Method</b>
+        <ul>
+          <li>All tweets will be categorised, according to your inputs, and to only one category.</li>
+          <li>Since all tweets are categorised, your inputs should cover the vast majority of tweets for categorisation.</li>
+          <li>
+            Especially useful when categories are better described with large text bodies,
+            because they are broad and have lots of matching keywords.
+          </li>
+          <li>If there is a huge number of tweets, NLP Method will have a perforamnce advantage over Absolute Method.</li>
+        </ul>
+
+        <b>Formats:</b> (Examples can be found in Step 3 of Pipeline)
+        <ul>
+          <li>Absolute Method: (Similar to Step 2)</li>
+          <li>NLP Method: Instead of words, input sentences or a paragraph. Semicolons are not necessary.</li>
+        </ul>
+
+        <b>Notes:</b>
         <ul>
           <li>Keywords are NOT case-sensitive.</li>
           <li>Category names cannot be the same. The name 'Non-Categorised' is reserved and cannot be used.</li>
-          <li>Tweets may be categorised in more than one category, or none at all.</li>
         </ul>
       </p>
     </div>

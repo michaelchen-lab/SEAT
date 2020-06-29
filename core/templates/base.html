@@ -30,7 +30,7 @@
                         <a class="nav-link" href="{% url 'core:step-zero' %}">Create New Report</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Help</a>
+                        <a class="nav-link" href="{% url 'help:pipeline' %}">Help</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'core:login' %}">Logout</a>
@@ -66,12 +66,12 @@
 
             {% block pipeline %}
               {% if request.session.reportID %}
-                &nbsp;
-                <hr>
-                <form action="{% url 'core:home' %}" method="POST">{% csrf_token %}
-                  <button type="submit" class="btn btn-secondary btn-lg btn-block" name="saveResumeButton" value="{{ report.name }}">Pause Report Pipeline</button>
-                  <button type="submit" class="btn btn-danger btn-lg btn-block" name="discardButton" value="{{ report.name }}">Discard Report</button>
-                </form>
+                  &nbsp;
+                  <hr>
+                  <form action="{% url 'core:home' %}" method="POST">{% csrf_token %}
+                    <button type="submit" class="btn btn-secondary btn-lg btn-block" name="saveResumeButton" value="{{ report.name }}">Pause Report Pipeline</button>
+                    <button type="submit" class="btn btn-danger btn-lg btn-block" name="discardButton" value="{{ report.name }}">Discard Report</button>
+                  </form>
               {% endif %}
             {% endblock %}
         </div>
