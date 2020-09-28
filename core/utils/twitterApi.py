@@ -3,16 +3,6 @@ import tweepy
 ## Search query operators
 ## https://developer.twitter.com/en/docs/tweets/search/guides/standard-operators
 
-consumer_key = 'opL9KcZ68AaKhDsNIgC4K1CKS'
-consumer_secret = 'TH1SqkwYE4r834T8gwj4TyWxHQkVfi8hxGIDxGW4zJPxHbAcjP'
-auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-api = tweepy.API(auth, wait_on_rate_limit=True)
-
-# search_engine = api.search(q="python", result_type="recent", count=100, lang='en', tweet_mode='extended')
-
-search_engine = api.search(q="@CarnivalCruise", result_type="recent", count=10, lang='en', tweet_mode='extended')
-search_results = [result for result in search_engine]
-
 class twitterApi:
 
     def authenticate(self, consumer_key='', consumer_secret=''):
@@ -82,9 +72,6 @@ class twitterApi:
                 break
 
         self.tweets = allTweets
-
-t = twitterApi()
-t.authenticate(consumer_key='opL9KcZ68AaKhDsNIgC4K1CKS', consumer_secret='TH1SqkwYE4r834T8gwj4TyWxHQkVfi8hxGIDxGW4zJPxHbAcjP')
 
 # t.get_tweets(q='@Nike', count=20, result_type='mixed')
 # t.get_tweets(q='@CarnivalCruise refund', count=20)

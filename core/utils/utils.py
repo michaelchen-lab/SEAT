@@ -134,8 +134,8 @@ def filterSentiment(tweets):
 def twitterApiWrapper(q='', count=0):
 
     t = twitterApi()
-    t.authenticate(consumer_key='opL9KcZ68AaKhDsNIgC4K1CKS', consumer_secret='TH1SqkwYE4r834T8gwj4TyWxHQkVfi8hxGIDxGW4zJPxHbAcjP')
-
+    t.authenticate(consumer_key=os.environ['TWITTER_CONSUMER_KEY'], consumer_secret=os.environ['TWITTER_CONSUMER_SECRET'])
+    
     t.get_tweets(q=q, count=int(count), result_type='recent')
     df = pd.DataFrame({
         'tweet_id':[tweet.id for tweet in t.tweets],

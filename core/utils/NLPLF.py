@@ -16,7 +16,7 @@ from snorkel.labeling import LabelingFunction
 from snorkel.labeling import LFAnalysis
 
 def ngrams(string, n=3):
-    
+
     string = fix_text(string) # fix text encoding issues
     string = string.encode("ascii", errors="ignore").decode() #remove non ascii chars
     string = string.lower() #make lower case
@@ -32,33 +32,6 @@ def ngrams(string, n=3):
     string = re.sub(r'[,-./]|\sBD',r'', string)
     ngrams = zip(*[string[i:] for i in range(n)])
     return [''.join(ngram) for ngram in ngrams]
-
-def awesome_cossim_top(A, B, ntop, lower_bound=0):
-    # force A and B as a CSR matrix.
-    # If they have already been CSR, there is no overhead
-    A = A.tocsr()
-    B = B.tocsr()
-    M, _ = A.shape
-    _, N = B.shape
- 
-    idx_dtype = np.int32
- 
-    nnz_max = M*ntop
- 
-    indptr = np.zeros(M+1, dtype=idx_dtype)
-    indices = np.zeros(nnz_max, dtype=idx_dtype)
-    data = np.zeros(nnz_max, dtype=A.dtype)
-    ct.sparse_dot_topn(
-        M, N, np.asarray(A.indptr, dtype=idx_dtype),
-        np.asarray(A.indices, dtype=idx_dtype),
-        A.data,
-        np.asarray(B.indptr, dtype=idx_dtype),
-        np.asarray(B.indices, dtype=idx_dtype),
-        B.data,
-        ntop,
-        lower_bound,
-        indptr, indices, data)
-    return csr_matrix((data,indices,indptr),shape=(M,N))
 
 ###matching query:
 def getNearestN(query, vectorizer, nbrs):
@@ -81,14 +54,14 @@ def NLP_matching(tweet_texts, category_keywords, category_names):
 
     Resource: https://towardsdatascience.com/fuzzy-matching-at-scale-84f2bfd0c536
     """
-    
+
     print('Vecorizing the data - this could take a few minutes for large datasets...')
     vectorizer = TfidfVectorizer(min_df=1, analyzer=ngrams, lowercase=False)
     tfidf = vectorizer.fit_transform(category_keywords)
     print('Vecorizing completed...')
-    
+
     nbrs = NearestNeighbors(n_neighbors=1, n_jobs=-1).fit(tfidf)
-    
+
     t1 = time.time()
     print('getting nearest n...')
     distances, indices = getNearestN(tweet_texts, vectorizer, nbrs)
@@ -130,7 +103,7 @@ def createNew_tweets_df(category_names, matches_df, tweets_df):
             return 1
         else:
             return 0
-        
+
     tweets_df['Match Confidence (Lower is better)'] = tweets_df['text'].apply(lambda x: get_confidence(x, matches_df))
 
     for category in category_names:
@@ -195,14 +168,14 @@ if __name__ == '__main__':
                     'COVID':['COVID','virus','coronavirus']}
 
     a_df, analysis = start_NLPLF(tweets_df, keyword_groups=keyword_groups, label=1)
-    
-    
+
+
 ##    tweet_texts = tweets_df['text'].tolist()
 ##    tweet_texts = list(dict.fromkeys(tweet_texts)) ## Remove duplicates
 ##
 ##    category_keywords = ['refund cancel cancelled', 'COVID virus coronavirus']
 ##    category_names = ['Refund', 'COVID']
-##    
+##
 ##    matches_df = NLP_matching(tweet_texts, category_keywords, category_names)
 ##
 ##    final_df = createNew_tweets_df(category_names, matches_df, tweets_df)
