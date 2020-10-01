@@ -1,31 +1,60 @@
-SEAT Web App
+# SEAT Web App
+---
 
-How it works
+The SEAT Web App is a sentiment analysis web app which aims to democratize sentiment analysis for non-technical users.
+
+## Links
+---
+
+### Article
+* [Final Report for SEAT](https://drive.google.com/file/d/1aBY6jPdaB1LX5gGpm_dkC82TWwZCj3xs/view?usp=sharing)
+
+### Video
+* [Youtube tutorial](https://youtu.be/DpauTl1RduY)
+
+### Report
+
+## How It Works
+---
 
 This is a sentiment analysis tool meant to help users extract tweet data on their interested topic, and run sentiment analysis on that data.
 
-Step 1: Extraction of tweets through Twitter API using keywords chosen by users
+**Step 1**: Extraction of tweets through Twitter API using keywords chosen by users
 
-Step 2: Filter out irrelevant data and discard them using keywords chosen by users
+**Step 2**: Filter out irrelevant data and discard them using keywords chosen by users
 
-Step 3: Categorise relevant data using topics chosen by users, and their corresponding keywords.
+**Step 3**: Categorise relevant data using topics chosen by users, and their corresponding keywords.
 
-Step 4: Sentiment analysis is performed using pre-trained NLP model(s)
+**Step 4**: Sentiment analysis is performed using pre-trained NLP model(s)
 
-Result: A final report is generated containing sentiment analysis results.
+## Get Started
+---
+Setup local Python environment
+```
+$ virtualenv venv
+```
+Enter Twitter consumer key and consumer secret key into env variables
+```
+Environment Variables: 'TWITTER_CONSUMER_KEY' and 'TWITTER_CONSUMER_SECRET'
+```
 
-Instructions on Running Django project
+Edit your PostgreSQL database credentials in /projects/settings.py
+```
+DATABASES = {
+    'default': {
+        'ENGINE': (engine),
+        'NAME': '(name)',
+        'USER': '(user)',
+        'PASSWORD': '(password)',
+        'HOST': '(host URL)',
+        'PORT': '(port number)'
+    }
+}
+```
 
-1. Enter virtual environment 
+Start Django local server in command line
+```
+$ python manage.py runserver
+```
 
-2. Enter Twitter consumer key and consumer secret key into env variables
-   ('TWITTER_CONSUMER_KEY' and 'TWITTER_CONSUMER_SECRET')
-
-3. Edit database settings in /projects/settings.py
-
-2. Enter 'python manage.py runserver'
-
-3. Go to http://127.0.0.1:8000/user/login 
-   (Could be a different root url. CMD should display the applicable one)
-
-
+Go to the localhost URL provided by Django, and have fun exploring SEAT!
