@@ -1,10 +1,8 @@
 # SEAT Web App
----
 
 The SEAT Web App is a sentiment analysis web app which aims to democratize sentiment analysis for non-technical users.
 
 ## Links
----
 
 ### Article
 * [Final Report for SEAT](https://drive.google.com/file/d/1aBY6jPdaB1LX5gGpm_dkC82TWwZCj3xs/view?usp=sharing)
@@ -15,7 +13,6 @@ The SEAT Web App is a sentiment analysis web app which aims to democratize senti
 ### Report
 
 ## How It Works
----
 
 This is a sentiment analysis tool meant to help users extract tweet data on their interested topic, and run sentiment analysis on that data.
 
@@ -28,7 +25,7 @@ This is a sentiment analysis tool meant to help users extract tweet data on thei
 **Step 4**: Sentiment analysis is performed using pre-trained NLP model(s)
 
 ## Get Started
----
+
 Setup local Python environment
 ```
 $ virtualenv venv
